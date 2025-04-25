@@ -13,8 +13,8 @@ const sizeClasses = {
 
 export function Text({
   size = "md",
-  children,
   className = "",
+  children,
   ...rest
 }: TextProps) {
   const textClass = sizeClasses[size] || sizeClasses.md;

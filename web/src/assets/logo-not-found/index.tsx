@@ -1,4 +1,4 @@
-const LogoNotFound = () => (
+export const LogoNotFound = () => (
   // biome-ignore lint/a11y/noSvgWithoutTitle: <explanation>
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -33,5 +33,3 @@ const LogoNotFound = () => (
     />
   </svg>
 );
-
-export default LogoNotFound;

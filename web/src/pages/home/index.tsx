@@ -1,4 +1,4 @@
-import Logo from "../../assets/logo";
+import { Logo } from "@/assets";
 import { Form } from "./form";
 import { MyLinks } from "./my-links";
 

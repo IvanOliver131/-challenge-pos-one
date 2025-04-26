@@ -6,8 +6,21 @@ import { useLinkQueries } from "@/queries/links";
 export function MyLinks() {
   const { links, downloadLinksMutation } = useLinkQueries();
 
-  const handleDownloadCSV = () => {
-    downloadLinksMutation();
+  const handleDownloadCSV = async () => {
+    try {
+      const { linksCsvUrl } = await downloadLinksMutation();
+
+      const link = document.createElement("a");
+
+      link.href = linksCsvUrl;
+      link.download = "";
+      link.target = "_blank";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -15,6 +28,7 @@ export function MyLinks() {
       <header className="flex justify-between mb-5">
         <Text size="lg">Meus links</Text>
         <Button
+          type="button"
           variant="icon-button"
           className="max-w-[100px]"
           onClick={handleDownloadCSV}
@@ -30,19 +44,23 @@ export function MyLinks() {
       </header>
 
       <section>
-        {/* <hr className="h-px mt-5 mb-4 bg-gray-200 border-0" /> */}
-        {/* not found */}
-        {/* <div className="flex flex-col items-center justify-center h-[102px]">
-          <Link className="text-gray-400" height={32} width={32} />
-          <Text
-            size="xs"
-            className="font-semibold text-gray-400 gap-3 uppercase"
-          >
-            ainda não existem links cadastrados
-          </Text>
-        </div> */}
-        {/* list links */}
-        <Links />
+        {links.data && links?.data.total > 0 ? (
+          <Links data={links.data.links} />
+        ) : (
+          <>
+            <hr className="h-px mt-5 mb-4 bg-gray-200 border-0" />
+
+            <div className="flex flex-col items-center justify-center h-[102px]">
+              <Link className="text-gray-400" height={32} width={32} />
+              <Text
+                size="xs"
+                className="font-semibold text-gray-400 gap-3 uppercase"
+              >
+                Ainda não existem links cadastrados
+              </Text>
+            </div>
+          </>
+        )}
       </section>
     </form>
   );

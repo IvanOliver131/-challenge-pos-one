@@ -9,8 +9,11 @@ import type { LinkData } from "@/types/Link";
 
 const schema = yup
   .object({
-    originalLink: yup.string().required("Campo obrigatório"),
-    shortLink: yup.string().required("Campo obrigatório"),
+    originalUrl: yup
+      .string()
+      .required("Campo obrigatório")
+      .url("O valor inserido deve ser uma URL válida"),
+    shortUrl: yup.string().required("Campo obrigatório"),
   })
   .required();
 
@@ -19,12 +22,24 @@ export function Form() {
     register,
     handleSubmit,
     formState: { errors, isValid, isSubmitting },
+    reset,
   } = useForm<LinkData>({
     resolver: yupResolver(schema),
+    mode: "onChange",
   });
   const { addLinkMutation } = useLinkQueries();
 
-  const onSubmit: SubmitHandler<LinkData> = (data) => addLinkMutation(data);
+  const onSubmit: SubmitHandler<LinkData> = async (data) => {
+    try {
+      await addLinkMutation(data);
+
+      reset();
+      // adicionar toast de sucesso
+    } catch (error) {
+      // adicionar toast de erro
+      console.log(error);
+    }
+  };
 
   return (
     <form
@@ -36,24 +51,24 @@ export function Form() {
         <Input
           title="link original"
           placeholder="www.exemplo.com"
-          error={!!errors.originalLink}
+          error={!!errors.originalUrl}
           errorMessage={
             <div className="flex items-center gap-1">
-              <Warning size={16} /> {errors.originalLink?.message}
+              <Warning size={16} /> {errors.originalUrl?.message}
             </div>
           }
-          {...register("originalLink")}
+          {...register("originalUrl")}
         />
         <Input
           title="link encurtado"
           placeholder="brev.ly/"
-          error={!!errors.shortLink}
+          error={!!errors.shortUrl}
           errorMessage={
             <div className="flex items-center gap-1">
-              <Warning size={16} /> {errors.shortLink?.message}
+              <Warning size={16} /> {errors.shortUrl?.message}
             </div>
           }
-          {...register("shortLink")}
+          {...register("shortUrl")}
         />
       </div>
       <Button disabled={!isValid || isSubmitting}>Salvar link</Button>

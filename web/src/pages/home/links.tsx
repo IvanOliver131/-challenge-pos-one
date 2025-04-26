@@ -1,23 +1,16 @@
-import { useLinkQueries } from "@/queries/links";
 import { Link } from "./link";
+import type { Link as LinkType } from "@/types/Link";
 
-export function Links() {
-  const { links } = useLinkQueries();
+interface LinksProps {
+  data: LinkType[];
+}
 
-  console.log(links);
-
+export function Links({ data }: LinksProps) {
   return (
     <div className="flex flex-col max-h-[360px] overflow-auto">
-      <Link />
-      <Link />
-      <Link />
-      <Link />
-      <Link />
-      <Link />
-      <Link />
-      <Link />
-      <Link />
-      <Link />
+      {data.map((link) => {
+        return <Link key={link.id} data={link} />;
+      })}
     </div>
   );
 }

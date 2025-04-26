@@ -1,4 +1,12 @@
 export type LinkData = {
-  originalLink: string;
-  shortLink: string;
+  originalUrl: string;
+  shortUrl: string;
+};
+
+export type Link = {
+  id: string;
+  originalUrl: string;
+  shortUrl: string;
+  accessNumber: number;
+  createdAt: Date;
 };

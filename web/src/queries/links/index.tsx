@@ -4,8 +4,8 @@ import {
   deleteLink,
   downloadCSVLinks,
   getLinks,
-} from "@services/links";
-import { queryClient } from "@services/query-client";
+} from "@/services/links";
+import { queryClient } from "@/services/query-client";
 
 export function useLinkQueries() {
   const links = useQuery({

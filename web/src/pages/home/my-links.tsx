@@ -2,9 +2,11 @@ import { Download, Link } from "@phosphor-icons/react";
 import { Text, Button } from "@/components";
 import { Links } from "./links";
 import { useLinkQueries } from "@/queries/links";
+import { useToast } from "@/hooks/use-toast";
 
 export function MyLinks() {
   const { links, downloadLinksMutation } = useLinkQueries();
+  const { success, notifyError } = useToast();
 
   const handleDownloadCSV = async () => {
     try {
@@ -18,8 +20,12 @@ export function MyLinks() {
       document.body.appendChild(link);
       link.click();
       link.remove();
+
+      success("Download realizado com sucesso!");
     } catch (error) {
-      console.log(error);
+      console.log("Erro ao realizar o download:", error);
+
+      notifyError("Erro ao realizar o download:");
     }
   };
 
@@ -29,7 +35,7 @@ export function MyLinks() {
         <Text size="lg">Meus links</Text>
         <Button
           type="button"
-          variant="icon-button"
+          styleButton="icon-button"
           className="max-w-[100px]"
           onClick={handleDownloadCSV}
           disabled={!links.data}

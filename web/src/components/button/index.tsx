@@ -1,43 +1,28 @@
-import clsx from "clsx";
-import type React from "react";
+import type { ComponentProps } from "react";
+import { tv, type VariantProps } from "tailwind-variants";
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "default" | "icon-button";
-  children: React.ReactNode;
-}
+const buttonVariants = tv({
+  base: "w-full text-md rounded-md disabled:opacity-50 disabled:pointer-events-none",
+  variants: {
+    styleButton: {
+      default: "bg-blue-base hover:bg-blue-dark text-white h-12",
+      "icon-button":
+        "bg-gray-200 hover:border border-blue-base text-gray-500 h-8",
+    },
+  },
+  defaultVariants: {
+    styleButton: "default",
+  },
+});
 
 export function Button({
-  variant = "default",
+  styleButton,
   className,
   children,
   ...rest
-}: ButtonProps) {
-  const statusClasses = {
-    default: {
-      background: "bg-blue-base hover:bg-blue-dark",
-      color: "text-white",
-      height: "h-12",
-    },
-    "icon-button": {
-      background: "bg-gray-200 hover:border border-blue-base",
-      color: "text-gray-500",
-      height: "h-8",
-    },
-  };
-
-  const current = statusClasses[variant];
-
+}: ComponentProps<"button"> & VariantProps<typeof buttonVariants>) {
   return (
-    <button
-      className={clsx(
-        "w-full text-md rounded-md disabled:opacity-50 disabled:none disabled:pointer-events-none",
-        current.height,
-        current.background,
-        current.color,
-        className
-      )}
-      {...rest}
-    >
+    <button className={buttonVariants({ styleButton, className })} {...rest}>
       {children}
     </button>
   );

@@ -1,11 +1,11 @@
 import { Button, Input, Text } from "@/components";
-
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { Warning } from "@phosphor-icons/react";
 import { useLinkQueries } from "@/queries/links";
 import type { LinkData } from "@/types/Link";
+import { useToast } from "@/hooks/use-toast";
 
 const schema = yup
   .object({
@@ -27,17 +27,19 @@ export function Form() {
     resolver: yupResolver(schema),
     mode: "onChange",
   });
+
   const { addLinkMutation } = useLinkQueries();
+  const { success, notifyError } = useToast();
 
   const onSubmit: SubmitHandler<LinkData> = async (data) => {
     try {
       await addLinkMutation(data);
 
       reset();
-      // adicionar toast de sucesso
+      success("Link adicionado com sucesso!");
     } catch (error) {
-      // adicionar toast de erro
-      console.log(error);
+      console.error("Erro ao adicionar link:", error);
+      notifyError("Erro ao adicionar link");
     }
   };
 

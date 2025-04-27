@@ -6,6 +6,7 @@ import {
   getLinks,
 } from "@/services/links";
 import { queryClient } from "@/services/query-client";
+import { getLink } from "@/services/links/get-link";
 
 export function useLinkQueries() {
   const links = useQuery({
@@ -31,10 +32,18 @@ export function useLinkQueries() {
     mutationFn: downloadCSVLinks,
   });
 
+  const { mutateAsync: getLinkMutation } = useMutation({
+    mutationFn: getLink,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["links"] });
+    },
+  });
+
   return {
     links,
     addLinkMutation,
     deleteLinkMutation,
     downloadLinksMutation,
+    getLinkMutation,
   };
 }

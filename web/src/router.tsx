@@ -11,7 +11,7 @@ const Router = createBrowserRouter([
     element: <ErrorPage />,
   },
   {
-    path: "/redirect",
+    path: "/:shortUrl",
     element: <Redirect />,
   },
 ]);

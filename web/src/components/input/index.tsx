@@ -1,7 +1,7 @@
 import type React from "react";
 import { Text } from "../text";
-import clsx from "clsx";
-import { useState } from "react";
+import { type ComponentProps, useState } from "react";
+import { tv } from "tailwind-variants";
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   title?: string;
@@ -9,6 +9,36 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   errorMessage?: React.ReactNode;
   error?: boolean;
 }
+
+const textVariants = tv({
+  base: "uppercase transition-colors",
+  variants: {
+    styleText: {
+      default: "text-gray-500",
+      focused: "text-blue-base",
+      error: "text-danger",
+    },
+  },
+  defaultVariants: {
+    styleText: "default",
+  },
+});
+
+const inputVariants = tv({
+  base: "px-4 h-12 text-gray-600 rounded-md text-sm outline-none transition-colors border-2 caret-blue-base focus:placeholder-transparent",
+  variants: {
+    styleInput: {
+      default:
+        "border-gray-300 focus:border-blue-base focus:ring-blue-base placeholder-gray-400 text-gray-500",
+      focused:
+        "border-gray-300 focus:border-blue-base focus:ring-blue-base placeholder-gray-400",
+      error: "border-danger focus:ring-danger placeholder-red-400 text-danger",
+    },
+  },
+  defaultVariants: {
+    styleInput: "default",
+  },
+});
 
 export function Input({
   title,
@@ -19,7 +49,7 @@ export function Input({
   onFocus,
   onBlur,
   ...rest
-}: InputProps) {
+}: ComponentProps<"input"> & InputProps) {
   const [isFocused, setIsFocused] = useState(false);
 
   const handleFocus = (event: React.FocusEvent<HTMLInputElement>) => {
@@ -34,48 +64,25 @@ export function Input({
 
   const inputStatus = isFocused ? "focused" : error ? "error" : "default";
 
-  const statusClasses = {
-    default: {
-      border: "border-gray-300 focus:border-blue-base",
-      ring: "focus:ring-blue-base",
-      placeholder: "placeholder-gray-400",
-      title: "text-gray-500",
-    },
-    focused: {
-      border: "border-gray-300 focus:border-blue-base",
-      ring: "focus:ring-blue-base",
-      placeholder: "placeholder-gray-400",
-      title: "text-blue-base",
-    },
-    error: {
-      border: "border-danger ",
-      ring: "focus:ring-danger",
-      placeholder: "placeholder-red-400",
-      title: "text-danger",
-    },
-  };
-
-  const current = statusClasses[inputStatus];
-
   return (
     <div className="flex flex-col gap-1 w-full">
       {title && (
         <Text
           size="xs"
-          className={clsx("uppercase transition-colors", current.title)}
+          className={textVariants({
+            styleText: inputStatus,
+            className,
+          })}
         >
           {title}
         </Text>
       )}
       <input
         placeholder={placeholder}
-        className={clsx(
-          "px-4 h-12 text-gray-600 rounded-md text-sm outline-none transition-colors border-2 caret-blue-base focus:placeholder-transparent",
-          current.border,
-          current.ring,
-          current.placeholder,
-          className
-        )}
+        className={inputVariants({
+          styleInput: inputStatus,
+          className,
+        })}
         onFocus={handleFocus}
         onBlur={handleBlur}
         {...rest}

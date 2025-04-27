@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { LogoIcon } from "@/assets";
 import { Text } from "@/components";
 import { useLinkQueries } from "@/queries/links";
@@ -10,6 +10,8 @@ export default function Redirect() {
   const { shortUrl } = useParams();
   const navigate = useNavigate();
 
+  const [originalUrl, setOriginalUrl] = useState("/");
+
   const hasFetched = useRef(false);
 
   useEffect(() => {
@@ -19,7 +21,8 @@ export default function Redirect() {
         hasFetched.current = true;
         const { originalUrl } = await getLinkMutation(shortUrl);
 
-        window.location.href = originalUrl;
+        // window.location.href = originalUrl;
+        setOriginalUrl(originalUrl);
       } catch (error) {
         console.log(error);
         navigate("/not-found");
@@ -36,10 +39,10 @@ export default function Redirect() {
         <Text size="xl" className="text-gray-600">
           Redirecionando...
         </Text>
-        <Text className="text-gray-500">
+        <Text className="text-gray-500 text-center">
           O link será aberto automaticamente em alguns instantes. Não foi
-          redirecionado?
-          <a href="/" className="text-blue-base font-bold">
+          redirecionado? {""}
+          <a href={originalUrl} className="text-blue-base font-bold">
             Acesse aqui
           </a>
         </Text>

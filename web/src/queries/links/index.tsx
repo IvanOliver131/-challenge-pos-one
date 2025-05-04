@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation } from "@tanstack/react-query";
 import {
   addLink,
   deleteLink,
@@ -9,9 +9,25 @@ import { queryClient } from "@/services/query-client";
 import { getLink } from "@/services/links/get-link";
 
 export function useLinkQueries() {
-  const links = useQuery({
-    queryKey: ["links"],
-    queryFn: getLinks,
+  const links = useInfiniteQuery({
+    queryKey: ["links", "infinite"],
+    queryFn: async ({ pageParam = 1 }) => {
+      const response = await getLinks(pageParam);
+      return {
+        links: response.links,
+        total: response.total,
+        currentPage: pageParam,
+      };
+    },
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, allPages) => {
+      const totalLoaded = allPages.reduce(
+        (acc, p) => acc + (p.links?.length || 0),
+        0
+      );
+      const hasMore = totalLoaded < lastPage.total;
+      return hasMore ? lastPage.currentPage + 1 : undefined;
+    },
   });
 
   const { mutateAsync: addLinkMutation } = useMutation({

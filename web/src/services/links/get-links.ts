@@ -9,7 +9,7 @@ interface Response {
 
 export async function getLinks(pageParam: number): Promise<Response> {
   const requestOptions: ApiRequestOptions = {
-    url: `${import.meta.env.VITE_BASE_URL}/links?page=${pageParam}&pageSize=2`,
+    url: `${import.meta.env.VITE_BASE_URL}/links?page=${pageParam}`,
     method: "GET",
     headers: {
       "Content-type": "application/json; charset=UTF-8",

@@ -21,8 +21,9 @@ export default function Redirect() {
         hasFetched.current = true;
         const { originalUrl } = await getLinkMutation(shortUrl);
 
-        // window.location.href = originalUrl;
         setOriginalUrl(originalUrl);
+
+        window.location.href = originalUrl;
       } catch (error) {
         console.log(error);
         navigate("/not-found");
